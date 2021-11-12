@@ -65,9 +65,6 @@
                             <classpathLayoutType>simple</classpathLayoutType>
                             <mainClass>GetWeather</mainClass>
                         </manifest>
-                        <!--<manifestEntries>-->
-                        <!--<Rsrc-Class-Path>${}</Rsrc-Class-Path>-->
-                        <!--</manifestEntries>-->
                     </archive>
                 </configuration>
             </plugin>
