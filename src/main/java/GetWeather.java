@@ -26,7 +26,7 @@ public class GetWeather {
     public static void main(String[] args) {
 
         String LOCATION = getLocation();
-        String API_KEY = "6df5fdbc30838dd60a6e5cbe8f75ebf9";
+        String API_KEY = "";
         String urlString = "https://api.openweathermap.org/data/2.5/weather?q="
                 + LOCATION + "&appid=" + API_KEY + "&units=metric";
 
