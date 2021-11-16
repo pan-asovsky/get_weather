@@ -4,9 +4,9 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.weatherApp</groupId>
+    <groupId>pan-asovsky.space.weatherApp</groupId>
     <artifactId>GetWeather</artifactId>
-    <version>0.2</version>
+    <version>0.52</version>
 
     <build>
         <plugins>

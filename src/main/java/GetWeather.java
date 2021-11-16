@@ -1,10 +1,10 @@
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 
 import java.net.URL;
 import java.net.URLConnection;
-import java.net.MalformedURLException;
 
 import java.util.List;
 import java.util.Map;
@@ -22,19 +22,29 @@ public class GetWeather {
                         .getType());
     }
 
-    //TODO Изменить параметры функции для вызова из консоли с переданным значением.
     public static void main(String[] args) {
 
+        try {
+            getWeather();
+        } catch (NullPointerException e) {
+            try {
+                getWeather();
+            } catch (IOException ex) {
+                System.out.println("!");
+            }
+        } catch (IOException e) {
+            e.getMessage();
+        }
+    }
+
+    public static void getWeather() throws NullPointerException, IOException {
+
         String LOCATION = getLocation();
-        String API_KEY = "";
-        String urlString = "https://api.openweathermap.org/data/2.5/weather?q="
-                + LOCATION + "&appid=" + API_KEY + "&units=metric";
 
         try {
-            Map<String, Object> responseMap = jsonToMap(getConnectionData(urlString));
+            Map<String, Object> responseMap = jsonToMap(getConnectionData(getCorrectURL(LOCATION)));
             Map<String, Object> mainInfo = jsonToMap(responseMap.get("main").toString());
             Map<String, Object> windInfo = jsonToMap(responseMap.get("wind").toString());
-
             @SuppressWarnings("unchecked")
             List<Map<String, Object>> weatherInfoList = (List<Map<String, Object>>) (responseMap.get("weather"));
             Map<String, Object> weatherInfo = weatherInfoList.get(0);
@@ -55,28 +65,51 @@ public class GetWeather {
                             "feels like " + temperatureFeels + "°C\n" +
                             "Humidity " + humidity + "%, pressure " + pressure + " mm\n" +
                             "Wind " + windDirection + ", " + windSpeed +
-                            " m/s, gusts up to " + windGust + "m/s\n"
+                            " m/s, gusts up to " + windGust + " m/s\n"
             );
-
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
+        } catch (NullPointerException e) {
+            getWeather();
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    public static String getConnectionData(String address) throws IOException {
+    public static String getConnectionData(String urlString) throws IOException {
 
         StringBuilder result = new StringBuilder();
-        URL url = new URL(address);
-        URLConnection connection = url.openConnection();
-        BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+        URL url = new URL(urlString);
 
-        String line;
-        while ((line = reader.readLine()) != null) {
-            result.append(line);
+        try {
+            URLConnection connection = url.openConnection();
+            BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+            String line;
+            while ((line = reader.readLine()) != null) {
+                result.append(line);
+            }
+        } catch (FileNotFoundException e) {
+            System.out.println("An error in writing the city or the city is not in the database.\n" +
+                    "Please check the correctness of the input, or change the city to another one.");
         }
         return result.toString();
+    }
+
+    public static String getLocation() throws IOException {
+
+        BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+        System.out.print("Enter your city: ");
+        String location = reader.readLine();
+        if (location.isEmpty()) {
+            System.out.print("Empty request. Try again: ");
+            location = reader.readLine();
+        }
+        return location;
+    }
+
+    public static String getCorrectURL(String LOCATION) {
+
+        String API_KEY = "6df5fdbc30838dd60a6e5cbe8f75ebf9";
+        return "https://api.openweathermap.org/data/2.5/weather?q="
+                + LOCATION + "&appid=" + API_KEY + "&units=metric";
     }
 
     public static double getDouble(Object obj) {
@@ -96,19 +129,8 @@ public class GetWeather {
         return windDirections[(int) Math.floor((angle % 360) / 45)];
     }
 
-    public static String getLocation() {
-
-        String userLocation = "";
-        try (BufferedReader reader = new BufferedReader(new InputStreamReader(System.in))) {
-            System.out.print("Enter your city: ");
-            userLocation = reader.readLine();
-        } catch (IOException e) {
-            e.getMessage();
-        }
-        return userLocation;
-    }
-
     public static int getPressure(int pressure) {
         return (int) Math.round(pressure * 0.75);
     }
+
 }
