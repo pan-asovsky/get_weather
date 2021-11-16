@@ -6,7 +6,7 @@
 
     <groupId>pan-asovsky.space.weatherApp</groupId>
     <artifactId>GetWeather</artifactId>
-    <version>0.52</version>
+    <version>0.53</version>
 
     <build>
         <plugins>

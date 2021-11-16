@@ -33,7 +33,7 @@ public class GetWeather {
                 System.out.println("!");
             }
         } catch (IOException e) {
-            e.getMessage();
+            System.out.println("IO");
         }
     }
 
